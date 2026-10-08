@@ -1,13 +1,15 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowRight, ShieldCheck, BookOpen, Layers, MessageSquare } from 'lucide-react';
+import { ArrowRight, ShieldCheck, BookOpen, Layers, MessageSquare, AlertCircle } from 'lucide-react';
 import { useAuth } from '@/lib/firebase/authContext';
 import { BrandLogo } from '@/components/ui/BrandLogo';
 
 export default function LoginPage() {
   const { user, signInWithGoogle, signInAsGuest, loading } = useAuth();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isSigningIn, setIsSigningIn] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -15,6 +17,27 @@ export default function LoginPage() {
       router.push('/dashboard');
     }
   }, [user, loading, router]);
+
+  const handleGoogleSignIn = async () => {
+    setErrorMessage(null);
+    setIsSigningIn(true);
+    try {
+      await signInWithGoogle();
+    } catch (err: any) {
+      console.error('Login error:', err);
+      let msg = err.message || 'Gagal masuk dengan Google.';
+      if (err.code === 'auth/operation-not-allowed' || err.code === 'auth/configuration-not-found') {
+        msg = 'Google Sign-In belum diaktifkan di Firebase Console. Buka Firebase Console > Authentication > Sign-in method > Aktifkan Google.';
+      } else if (err.code === 'auth/popup-closed-by-user') {
+        msg = 'Jendela login ditutup sebelum selesai.';
+      } else if (err.code === 'auth/unauthorized-domain') {
+        msg = 'Domain ini belum didaftarkan di Firebase Console > Authentication > Settings > Authorized domains.';
+      }
+      setErrorMessage(msg);
+    } finally {
+      setIsSigningIn(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[var(--bg)] text-[var(--text)] flex flex-col items-center justify-center p-4">
@@ -49,12 +72,21 @@ export default function LoginPage() {
             </div>
           </div>
 
+          {/* Error Alert */}
+          {errorMessage && (
+            <div className="p-3 rounded-lg bg-[var(--danger)]/15 border border-[var(--danger)]/30 text-[var(--danger)] text-xs leading-relaxed flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+              <span>{errorMessage}</span>
+            </div>
+          )}
+
           {/* Google Sign In */}
           <button
-            onClick={() => signInWithGoogle()}
-            className="w-full py-2.5 px-4 rounded-xl bg-[var(--surface-2)] hover:bg-[var(--border)] border border-[var(--border)] text-xs font-semibold flex items-center justify-center gap-2.5 transition"
+            onClick={handleGoogleSignIn}
+            disabled={isSigningIn}
+            className="w-full py-2.5 px-4 rounded-xl bg-[var(--surface-2)] hover:bg-[var(--border)] border border-[var(--border)] text-xs font-semibold flex items-center justify-center gap-2.5 transition disabled:opacity-50 cursor-pointer"
           >
-            <svg className="w-4 h-4" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
               <path
                 fill="#4285F4"
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -72,7 +104,7 @@ export default function LoginPage() {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
               />
             </svg>
-            Masuk dengan Google
+            {isSigningIn ? 'Menghubungkan Google...' : 'Masuk dengan Google'}
           </button>
 
           {/* Guest Demo Mode */}
@@ -80,7 +112,7 @@ export default function LoginPage() {
             onClick={() => signInAsGuest()}
             className="w-full btn-primary py-2.5 text-xs"
           >
-            Masuk Mode Coba <ArrowRight className="w-3.5 h-3.5" />
+            Masuk Mode Coba (Instan) <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
 
