@@ -1,26 +1,237 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Light Mode (Warm Paper) */
+    --bg: #F6F4EF;
+    --surface: #FFFFFF;
+    --surface-2: #F0EDE6;
+    --border: #E3DED3;
+    --border-subtle: #ECE8DE;
+    --text: #1B1F27;
+    --muted: #5C6675;
+    --primary: #0F9488;
+    --primary-hover: #0D766E;
+    --primary-subtle: #E6F6F4;
+    --reward: #B7791F;
+    --reward-subtle: #FEF3C7;
+    --success: #15803D;
+    --success-subtle: #DCFCE7;
+    --danger: #DC2626;
+    --danger-subtle: #FEE2E2;
+  }
+
+  .dark {
+    /* Dark Mode (Quest Log / HUD - Default) */
+    --bg: #0B0F14;
+    --surface: #121821;
+    --surface-2: #18202B;
+    --border: #263140;
+    --border-subtle: #1D2633;
+    --text: #E6EAF0;
+    --muted: #8A96A8;
+    --primary: #2DD4BF;
+    --primary-hover: #14B8A6;
+    --primary-subtle: rgba(45, 212, 191, 0.12);
+    --reward: #F5B82E;
+    --reward-subtle: rgba(245, 184, 46, 0.12);
+    --success: #34D399;
+    --success-subtle: rgba(52, 211, 153, 0.12);
+    --danger: #F87171;
+    --danger-subtle: rgba(248, 113, 113, 0.12);
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.01em;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Tabular numbers for HUD stats, timers, XP counters */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Quest Card (Linear/Notion minimalist frame) */
+.quest-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.quest-card-hover:hover {
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+}
+
+/* Clean Flat Buttons */
+.btn-primary {
+  background-color: var(--primary);
+  color: #0B0F14;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 0.55rem 1rem;
+  font-size: 0.8125rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: all 0.15s ease;
+  border: 1px solid transparent;
+}
+.btn-primary:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  background-color: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 0.55rem 1rem;
+  font-size: 0.8125rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: all 0.15s ease;
+}
+.btn-secondary:hover {
+  background-color: var(--surface-2);
+  border-color: var(--muted);
+  transform: translateY(-1px);
+}
+
+.btn-reward {
+  background-color: var(--reward);
+  color: #0B0F14;
+  font-weight: 700;
+  border-radius: 10px;
+  padding: 0.55rem 1rem;
+  font-size: 0.8125rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: all 0.15s ease;
+}
+.btn-reward:hover {
+  box-shadow: 0 0 12px rgba(245, 184, 46, 0.35);
+  transform: translateY(-1px);
+}
+
+/* Controlled HUD Glows */
+.glow-reward {
+  box-shadow: 0 0 12px rgba(245, 184, 46, 0.25);
+}
+
+.glow-primary {
+  box-shadow: 0 0 12px rgba(45, 212, 191, 0.25);
+}
+
+/* TipTap & Reading Typography (Clean, focused, 72ch) */
+.prose-belajar {
+  max-width: 72ch;
+  line-height: 1.75;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.prose-belajar h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.prose-belajar h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 1.25rem;
+  margin-bottom: 0.4rem;
+  color: var(--text);
+}
+
+.prose-belajar p {
+  margin-bottom: 0.85rem;
+}
+
+.prose-belajar ul, .prose-belajar ol {
+  padding-left: 1.25rem;
+  margin-bottom: 0.85rem;
+}
+
+.prose-belajar li {
+  margin-bottom: 0.25rem;
+}
+
+.prose-belajar blockquote {
+  border-left: 3px solid var(--primary);
+  padding-left: 0.85rem;
+  font-style: italic;
+  margin: 0.85rem 0;
+  color: var(--muted);
+}
+
+.prose-belajar strong {
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.prose-belajar code {
+  background-color: var(--surface-2);
+  border: 1px solid var(--border);
+  padding: 0.15rem 0.35rem;
+  border-radius: 6px;
+  font-size: 0.85em;
+  font-family: monospace;
+}
+
+.prose-belajar table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.875rem;
+}
+
+.prose-belajar th, .prose-belajar td {
+  border: 1px solid var(--border);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+
+.prose-belajar th {
+  background-color: var(--surface-2);
+  font-weight: 600;
+}
+
+/* Print Stylesheet */
+@media print {
+  body {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .prose-belajar {
+    max-width: 100% !important;
+    font-size: 11pt !important;
+  }
 }
